@@ -1,0 +1,43 @@
+type Participant = {
+  id: number;
+  teamId: number;
+  teamRank: number;
+  teamTotal: number;
+  shard: string;
+  dbnos: number;
+  assists: number;
+  boosts: number;
+  damageDealt: number;
+  deathType: string;
+  headshotKills: number;
+  heals: number;
+  killPlace: number;
+  killStreaks: number;
+  kills: number;
+  longestKill: number;
+  name: string;
+  playerId: string;
+  revives: number;
+  rideDistance: number;
+  roadKills: number;
+  swimDistance: number;
+  teamKills: number;
+  timeSurvived: number;
+  vehicleDestroys: number;
+  walkDistance: number;
+  weaponsAcquired: number;
+  winPlace: number;
+  mainWeapon: string;
+};
+
+type Match = {
+  id: string;
+  createdAt: string;
+  duration: number;
+  matchType: "official" | "arcade";
+  gameMode: "tdm" | "squad" | "duo" | "solo";
+  mapName: string;
+  isCustomMatch: boolean;
+  shard: string;
+  participants: Participant[];
+};

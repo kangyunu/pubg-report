@@ -1,0 +1,22 @@
+{
+  "name": "pubg",
+  "version": "1.0.0",
+  "author": "",
+  "main": "index.js",
+  "devDependencies": {
+    "@playwright/test": "^1.58.2",
+    "typescript": "^5.9.3",
+    "@types/bun": "latest"
+  },
+  "description": "",
+  "keywords": [],
+  "license": "ISC",
+  "private": true,
+  "scripts": {
+    "start": "bun src/run.ts"
+  },
+  "type": "commonjs",
+  "dependencies": {
+    "dayjs": "^1.11.19"
+  }
+}
