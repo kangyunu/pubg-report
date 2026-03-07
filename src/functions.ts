@@ -14,7 +14,7 @@ export const crawling = async ({
 }: CrawlingInput) => {
   const url = `https://dak.gg/pubg/profile/${platform}/${players[0]}/${season}/matches/`;
 
-  const browser = await chromium.launch({ headless: true });
+  const browser = await chromium.launch({ headless: false });
 
   const accmulatedRawMatches: Match[] = [];
   const matchMap = new Map<string, Match[]>();

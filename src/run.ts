@@ -1,9 +1,19 @@
+import { parseArgs } from "util";
 import { crawling } from "./functions";
 
-const season = Bun.argv.at(-1);
+const { values } = parseArgs({
+  args: Bun.argv,
+  options: {
+    season: {
+      type: "string",
+    },
+  },
+  strict: true,
+  allowPositionals: true,
+});
 
 await crawling({
-  season: season || "pc-2018-40",
+  season: values.season || "pc-2018-40",
   platform: "kakao",
   players: ["rkdqudtjs", "JJuliring", "chuchui12_"],
 });

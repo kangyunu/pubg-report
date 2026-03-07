@@ -5,7 +5,7 @@ This project crawls PUBG match data from DAK.GG and saves the results to `public
 ## Run
 
 ```bash
-bun run start -- <season>
+bun run start --season <season>
 ```
 
 - `<season>` is optional.
@@ -15,6 +15,6 @@ bun run start -- <season>
 
 When the command runs, match data is crawled and saved under `public/matches`.
 
-- Daily match files are saved as `public/matches/YYYY-MM-DD.json`.
-- A date-based file index is saved as `public/matches/files.json`.
+- Daily match files are saved as `docs/matches/YYYY-MM-DD.json`.
+- A date-based file index is saved as `docs/matches/files.json`.
 - `files.json` contains the list of match-date files (for example, `matches/2026-03-06.json`).
