@@ -1,9 +1,7 @@
-import useMatches from "./hooks/useMatches";
+import DashboardPage from "./components/dashboard/DashboardPage";
 
 const App = () => {
-  const { matches } = useMatches();
-
-  return <pre>{JSON.stringify(matches, null, 2)}</pre>;
+  return <DashboardPage />;
 };
 
 export default App;
