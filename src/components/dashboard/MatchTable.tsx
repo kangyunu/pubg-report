@@ -80,7 +80,6 @@ const MatchTable = ({ rows, title = "Latest Matches" }: Props) => {
           <thead>
             <tr>
               <th>DATE</th>
-              <th className="cell-center">MODE</th>
               <th>MAP</th>
               <th className="cell-right">SCORE</th>
               <th className="cell-center">RANK</th>
@@ -103,7 +102,6 @@ const MatchTable = ({ rows, title = "Latest Matches" }: Props) => {
               return (
                 <tr className={isTop1 ? "top1-row" : undefined} key={row.id}>
                   <td>{dayjs(row.createdAt).format("MM-DD HH:mm")}</td>
-                  <td className="cell-center">{row.mode.toUpperCase()}</td>
                   <td>{mapLabel}</td>
                   <td className="cell-right">
                     <span
