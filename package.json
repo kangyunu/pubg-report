@@ -13,7 +13,7 @@
   "license": "ISC",
   "private": true,
   "scripts": {
-    "start": "bun src/run.ts"
+    "generate-match-logs": "bun src/run.ts"
   },
   "type": "module",
   "dependencies": {
