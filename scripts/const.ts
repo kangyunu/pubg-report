@@ -1,3 +1,3 @@
 import { join } from "path";
 
-export const LOG_ROOT_PATH = join("dist", "matches");
+export const LOG_ROOT_PATH = join("docs", "matches");

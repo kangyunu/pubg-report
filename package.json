@@ -8,9 +8,11 @@
   "license": "ISC",
   "private": true,
   "scripts": {
-    "generate-match-logs": "bun src/run.ts",
+    "generate-match-logs": "bun scripts/run.ts",
     "dev": "vite",
+    "prebuild": "bun scripts/preserve-matches.ts backup",
     "build": "vite build",
+    "postbuild": "bun scripts/preserve-matches.ts restore",
     "preview": "vite preview"
   },
   "type": "module",
