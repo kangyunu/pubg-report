@@ -1,8 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
-import RootProvider from "./components/providers/RootProvider";
 
 const App = () => {
-  const { data: matches } = useQuery({
+  const { data: matches = [] } = useQuery({
     queryKey: ["matches"],
     queryFn: async () => {
       const host = "https://kangyunu.github.io/pubg-report";
@@ -14,7 +13,7 @@ const App = () => {
 
       const allMatches: Match[] = [];
       for (const fileName of fileNames) {
-        const res = await fetch(`${host}/matches/${fileName}`);
+        const res = await fetch(`${host}/${fileName}`);
         if (!res.ok) {
           console.warn(`Failed to fetch ${fileName}, skipping.`);
           continue;
@@ -26,11 +25,7 @@ const App = () => {
     },
   });
 
-  return (
-    <RootProvider>
-      <pre>{JSON.stringify(matches, null, 2)}</pre>{" "}
-    </RootProvider>
-  );
+  return <pre>{JSON.stringify(matches, null, 2)}</pre>;
 };
 
 export default App;
