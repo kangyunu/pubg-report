@@ -1,6 +1,14 @@
 import dayjs from "dayjs";
-import { chromium, Response } from "playwright";
+import { chromium, type Response } from "playwright";
 import { LOG_ROOT_PATH } from "./const";
+
+const matchFilter = (match: Match, players: string[]) => {
+  const { gameMode, matchType, participants } = match;
+
+  if (matchType !== "official") return false;
+  if (gameMode !== "squad" && gameMode !== "duo") return false;
+  return participants.every(({ name }) => players.includes(name));
+};
 
 type CrawlingInput = {
   season: string;
@@ -14,7 +22,7 @@ export const crawling = async ({
 }: CrawlingInput) => {
   const url = `https://dak.gg/pubg/profile/${platform}/${players[0]}/${season}/matches/`;
 
-  const browser = await chromium.launch({ headless: false });
+  const browser = await chromium.launch({ headless: true });
 
   const accmulatedRawMatches: Match[] = [];
   const matchMap = new Map<string, Match[]>();
@@ -67,15 +75,7 @@ export const crawling = async ({
   await browser.close();
 
   const filteredMatches = accmulatedRawMatches
-    .filter(({ gameMode, matchType }) => {
-      return gameMode === "squad" && matchType === "official";
-    })
-    .filter(({ participants }) => {
-      if (players.length !== participants.length) return;
-      return participants.every((participant) =>
-        players.includes(participant.name),
-      );
-    })
+    .filter((match) => matchFilter(match, players))
     .map((match) => {
       const mapKey = dayjs(match.createdAt).format("YYYY-MM-DD");
       if (matchMap.has(mapKey)) {
