@@ -2,7 +2,12 @@ import "../../lib/chartjs";
 import { useEffect, useMemo, useState } from "react";
 import useMatches from "../../hooks/useMatches";
 import useDashboardMetrics from "../../hooks/useDashboardMetrics";
-import { playerContributionRows, summarize } from "../../lib/metrics";
+import {
+  getScoreGrade,
+  getTeamScore,
+  playerContributionRows,
+  summarize,
+} from "../../lib/metrics";
 import DashboardHeader from "./DashboardHeader";
 import KpiCards from "./KpiCards";
 import DailyTrendLineChart from "./charts/DailyTrendLineChart";
@@ -11,6 +16,12 @@ import MatchTable from "./MatchTable";
 import "./dashboard.css";
 
 const ALL_DATES = "all";
+const formatInt = (value: number) => value.toLocaleString("en-US");
+const formatFixed = (value: number, digits: number) =>
+  value.toLocaleString("en-US", {
+    minimumFractionDigits: digits,
+    maximumFractionDigits: digits,
+  });
 
 const DashboardPage = () => {
   const { matches } = useMatches();
@@ -53,6 +64,16 @@ const DashboardPage = () => {
     [selectedDateRows],
   );
 
+  const selectedDateTeamScore = useMemo(
+    () => getTeamScore(selectedDateRows),
+    [selectedDateRows],
+  );
+
+  const selectedDateTeamGrade = useMemo(
+    () => getScoreGrade(selectedDateTeamScore),
+    [selectedDateTeamScore],
+  );
+
   const selectedContributionRows = useMemo(() => {
     if (selectedDate === ALL_DATES) {
       return contributionRows;
@@ -68,37 +89,42 @@ const DashboardPage = () => {
   const selectedDateKpis = useMemo(
     () => [
       {
+        key: "date-team-score",
+        label: "TEAM SCORE",
+        value: `${formatFixed(selectedDateTeamScore, 1)} ${selectedDateTeamGrade}`,
+      },
+      {
         key: "date-matches",
         label: "Matches",
-        value: selectedDateSummary.total.toString(),
+        value: formatInt(selectedDateSummary.total),
       },
       {
         key: "date-rank",
         label: "Avg Rank",
-        value: selectedDateSummary.avgRank.toFixed(1),
+        value: formatFixed(selectedDateSummary.avgRank, 1),
       },
       {
         key: "date-damage",
         label: "Avg Damage",
-        value: selectedDateSummary.avgDamage.toFixed(0),
+        value: formatInt(Math.round(selectedDateSummary.avgDamage)),
       },
       {
         key: "date-kills",
         label: "Avg Kills",
-        value: selectedDateSummary.avgKills.toFixed(2),
+        value: formatFixed(selectedDateSummary.avgKills, 2),
       },
       {
         key: "date-top10",
         label: "Top10 Rate",
-        value: `${selectedDateSummary.top10Rate.toFixed(1)}%`,
+        value: `${formatFixed(selectedDateSummary.top10Rate, 1)}%`,
       },
       {
         key: "date-win",
         label: "Win Rate",
-        value: `${selectedDateSummary.winRate.toFixed(1)}%`,
+        value: `${formatFixed(selectedDateSummary.winRate, 1)}%`,
       },
     ],
-    [selectedDateSummary],
+    [selectedDateSummary, selectedDateTeamGrade, selectedDateTeamScore],
   );
 
   return (

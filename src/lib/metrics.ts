@@ -21,6 +21,7 @@ export type PlayerContributionRow = {
   avgDamage: number;
   damageShare: number;
   killsShare: number;
+  score: number;
 };
 
 const SUPPORTED_MODES: Array<"solo" | "duo" | "squad"> = [
@@ -30,6 +31,9 @@ const SUPPORTED_MODES: Array<"solo" | "duo" | "squad"> = [
 ];
 
 const asPercent = (value: number) => value * 100;
+
+const clamp = (value: number, min: number, max: number) =>
+  Math.min(max, Math.max(min, value));
 
 const avg = (values: number[]) => {
   if (values.length === 0) {
@@ -41,6 +45,71 @@ const avg = (values: number[]) => {
 const isTop10 = (row: MatchRow) => {
   const threshold = Math.max(1, Math.floor(row.teamTotal * 0.2));
   return row.teamRank <= threshold;
+};
+
+export const getMatchScore = (row: MatchRow) => {
+  const normalizedRank =
+    row.teamTotal <= 1 ? 1 : 1 - (row.teamRank - 1) / (row.teamTotal - 1);
+
+  const rankScore = clamp(normalizedRank * 100, 0, 100);
+  const damageScore = clamp((row.damage / 800) * 100, 0, 100);
+  const killScore = clamp((row.kills / 8) * 100, 0, 100);
+  const surviveScore = clamp((row.surviveSeconds / 1800) * 100, 0, 100);
+  const winBonus = row.teamRank === 1 ? 100 : 0;
+
+  const score =
+    rankScore * 0.35 +
+    damageScore * 0.3 +
+    killScore * 0.2 +
+    surviveScore * 0.1 +
+    winBonus * 0.05;
+
+  return clamp(score, 0, 100);
+};
+
+export const getTeamScore = (rows: MatchRow[]) => {
+  if (rows.length === 0) {
+    return 0;
+  }
+
+  return avg(rows.map(getMatchScore));
+};
+
+export const getScoreGrade = (score: number) => {
+  if (score >= 90) {
+    return "S";
+  }
+  if (score >= 80) {
+    return "A";
+  }
+  if (score >= 70) {
+    return "B";
+  }
+  if (score >= 60) {
+    return "C";
+  }
+  return "D";
+};
+
+export const getPlayerScore = (row: {
+  damageShare: number;
+  killsShare: number;
+  avgDamage: number;
+  avgKills: number;
+}) => {
+  const damageShareScore = clamp(row.damageShare, 0, 100);
+  const killsShareScore = clamp(row.killsShare, 0, 100);
+  const avgDamageScore = clamp((row.avgDamage / 300) * 100, 0, 100);
+  const avgKillsScore = clamp((row.avgKills / 3) * 100, 0, 100);
+
+  return clamp(
+    damageShareScore * 0.4 +
+      killsShareScore * 0.3 +
+      avgDamageScore * 0.2 +
+      avgKillsScore * 0.1,
+    0,
+    100,
+  );
 };
 
 export const computeFocusPlayerId = (matches: Match[]) => {
@@ -322,6 +391,11 @@ export const playerContributionRows = (
         value.teamDamage === 0 ? 0 : (value.damage / value.teamDamage) * 100,
       killsShare:
         value.teamKills === 0 ? 0 : (value.kills / value.teamKills) * 100,
+      score: 0,
     }))
-    .sort((a, b) => b.damageShare - a.damageShare);
+    .map((row) => ({
+      ...row,
+      score: getPlayerScore(row),
+    }))
+    .sort((a, b) => b.score - a.score);
 };

@@ -192,6 +192,48 @@ body {
   font-weight: 600;
 }
 
+.matches-table tbody tr.top1-row {
+  background: #f7f2ea;
+}
+
+.score-mark.score-s {
+  color: #0f4f3b;
+  font-weight: 900;
+}
+
+.score-mark.score-a {
+  color: #2f7a5f;
+  font-weight: 700;
+}
+
+.rank-mark.rank-top1 {
+  color: #7d3d2b;
+  font-weight: 800;
+}
+
+.rank-mark.rank-top5 {
+  color: #2f5b4b;
+  font-weight: 700;
+}
+
+.damage-1k {
+  color: #b3472f;
+  font-weight: 800;
+}
+
+.damage-800 {
+  color: #9c5f2d;
+  font-weight: 700;
+}
+
+.cell-center {
+  text-align: center !important;
+}
+
+.cell-right {
+  text-align: right !important;
+}
+
 .table-compact td,
 .table-compact th {
   font-size: 12px;
@@ -220,6 +262,12 @@ body {
   justify-content: space-between;
   align-items: center;
   font-size: 13px;
+}
+
+.match-head-right {
+  display: flex;
+  gap: 6px;
+  align-items: center;
 }
 
 .match-head span {

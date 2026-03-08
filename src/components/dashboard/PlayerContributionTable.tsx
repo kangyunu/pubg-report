@@ -12,6 +12,11 @@ type Row = {
 
 const PlayerContributionTable = ({ rows }: { rows: Row[] }) => {
   const pieRows = rows.slice(0, 6);
+  const formatFixed = (value: number, digits: number) =>
+    value.toLocaleString("en-US", {
+      minimumFractionDigits: digits,
+      maximumFractionDigits: digits,
+    });
 
   return (
     <section className="panel chart-span-6">
@@ -57,16 +62,18 @@ const PlayerContributionTable = ({ rows }: { rows: Row[] }) => {
           <thead>
             <tr>
               <th>Player</th>
-              <th>DMG%</th>
-              <th>KILL%</th>
+              <th className="cell-right">DMG%</th>
+              <th className="cell-right">KILL%</th>
             </tr>
           </thead>
           <tbody>
             {rows.map((row) => (
               <tr key={row.playerId}>
                 <td>{row.name}</td>
-                <td>{row.damageShare.toFixed(1)}</td>
-                <td>{row.killsShare.toFixed(1)}</td>
+                <td className="cell-right">
+                  {formatFixed(row.damageShare, 1)}
+                </td>
+                <td className="cell-right">{formatFixed(row.killsShare, 1)}</td>
               </tr>
             ))}
           </tbody>
