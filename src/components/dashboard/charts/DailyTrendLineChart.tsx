@@ -1,42 +1,50 @@
 import { Line } from "react-chartjs-2";
-
-type Point = {
-  day: string;
-  avgDamage: number;
-  avgRank: number;
-  matches: number;
-};
+import type { DailyDamageTrend } from "../../../lib/metrics";
 
 type Props = {
-  points: Point[];
+  points: DailyDamageTrend;
   title?: string;
 };
 
 const DailyTrendLineChart = ({ points, title = "Daily Trend" }: Props) => {
+  const palette = [
+    "#2f5b4b",
+    "#515882",
+    "#b78b44",
+    "#4f7c8d",
+    "#7d5a99",
+    "#8b5a3c",
+  ];
+
   return (
     <section className="panel chart-span-8">
       <h3 className="panel-title">{title}</h3>
       <div className="chart-area">
         <Line
           data={{
-            labels: points.map((point) => point.day.slice(5)),
+            labels: points.days.map((day) => day.slice(5)),
             datasets: [
               {
-                label: "Avg Damage",
-                data: points.map((point) => Number(point.avgDamage.toFixed(0))),
-                yAxisID: "yDamage",
+                label: "Team",
+                data: points.teamAvgDamage.map((value) =>
+                  Number(value.toFixed(0)),
+                ),
                 borderColor: "#b3472f",
                 backgroundColor: "rgba(179, 71, 47, 0.18)",
                 fill: true,
                 tension: 0.3,
               },
-              {
-                label: "Avg Rank",
-                data: points.map((point) => Number(point.avgRank.toFixed(1))),
-                yAxisID: "yRank",
-                borderColor: "#2f5b4b",
-                tension: 0.3,
-              },
+              ...points.players.map((player, index) => ({
+                label: player.name,
+                data: player.avgDamageByDay.map((value) =>
+                  value === null ? null : Number(value.toFixed(0)),
+                ),
+                borderColor: palette[index % palette.length],
+                backgroundColor: "transparent",
+                fill: false,
+                spanGaps: true,
+                tension: 0.25,
+              })),
             ],
           }}
           options={{
@@ -49,22 +57,16 @@ const DailyTrendLineChart = ({ points, title = "Daily Trend" }: Props) => {
               tooltip: {
                 callbacks: {
                   afterLabel(context) {
-                    const row = points[context.dataIndex];
-                    return `Matches: ${row.matches}`;
+                    const count = points.matches[context.dataIndex] ?? 0;
+                    return `Matches: ${count}`;
                   },
                 },
               },
             },
             scales: {
-              yDamage: {
+              y: {
                 type: "linear",
                 position: "left",
-              },
-              yRank: {
-                type: "linear",
-                position: "right",
-                reverse: true,
-                grid: { drawOnChartArea: false },
               },
             },
           }}

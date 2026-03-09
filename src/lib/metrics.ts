@@ -24,6 +24,17 @@ export type PlayerContributionRow = {
   score: number;
 };
 
+export type DailyDamageTrend = {
+  days: string[];
+  teamAvgDamage: number[];
+  matches: number[];
+  players: Array<{
+    playerId: string;
+    name: string;
+    avgDamageByDay: Array<number | null>;
+  }>;
+};
+
 const SUPPORTED_MODES: Array<"solo" | "duo" | "squad"> = [
   "solo",
   "duo",
@@ -283,6 +294,134 @@ export const dailySeries = (rows: MatchRow[]) => {
       avgRank: avg(dayRows.map((row) => row.teamRank)),
       matches: dayRows.length,
     }));
+};
+
+export const buildDailyDamageTrend = (
+  matches: Match[],
+  focusPlayerId: string,
+): DailyDamageTrend => {
+  const teamRows = toTeamRows(matches, focusPlayerId);
+  const groupedTeam = new Map<string, MatchRow[]>();
+
+  teamRows.forEach((row) => {
+    const current = groupedTeam.get(row.day) ?? [];
+    current.push(row);
+    groupedTeam.set(row.day, current);
+  });
+
+  const days = [...groupedTeam.keys()].sort((a, b) => a.localeCompare(b));
+
+  const teamPerMatchAvgDamageByDay = new Map<string, number[]>();
+
+  const matchesByDay = days.map((day) => (groupedTeam.get(day) ?? []).length);
+
+  const perDayPlayerAgg = new Map<
+    string,
+    Map<
+      string,
+      {
+        name: string;
+        sumDamage: number;
+        count: number;
+      }
+    >
+  >();
+
+  matches.forEach((match) => {
+    if (!isSupportedOfficialMatch(match)) {
+      return;
+    }
+
+    const focusParticipant =
+      match.participants.find((item) => item.playerId === focusPlayerId) ??
+      match.participants[0];
+
+    if (!focusParticipant) {
+      return;
+    }
+
+    const day = dayjs(match.createdAt).format("YYYY-MM-DD");
+    const dayMap = perDayPlayerAgg.get(day) ?? new Map();
+
+    const teamParticipants = match.participants.filter(
+      (item) => item.teamId === focusParticipant.teamId,
+    );
+
+    const teamDamage = teamParticipants.reduce(
+      (sum, participant) => sum + participant.damageDealt,
+      0,
+    );
+    const teamPerMatchAvgDamage =
+      teamParticipants.length === 0 ? 0 : teamDamage / teamParticipants.length;
+
+    const dayDamages = teamPerMatchAvgDamageByDay.get(day) ?? [];
+    dayDamages.push(teamPerMatchAvgDamage);
+    teamPerMatchAvgDamageByDay.set(day, dayDamages);
+
+    teamParticipants.forEach((participant) => {
+      const prev = dayMap.get(participant.playerId) ?? {
+        name: participant.name,
+        sumDamage: 0,
+        count: 0,
+      };
+
+      dayMap.set(participant.playerId, {
+        name: participant.name,
+        sumDamage: prev.sumDamage + participant.damageDealt,
+        count: prev.count + 1,
+      });
+    });
+
+    perDayPlayerAgg.set(day, dayMap);
+  });
+
+  const playerIds = new Set<string>();
+  perDayPlayerAgg.forEach((dayMap) => {
+    dayMap.forEach((_, playerId) => playerIds.add(playerId));
+  });
+
+  const teamAvgDamage = days.map((day) =>
+    avg(teamPerMatchAvgDamageByDay.get(day) ?? []),
+  );
+
+  const players = [...playerIds]
+    .map((playerId) => {
+      const sample = [...perDayPlayerAgg.values()]
+        .map((dayMap) => dayMap.get(playerId))
+        .find(Boolean);
+
+      const avgDamageByDay = days.map((day) => {
+        const value = perDayPlayerAgg.get(day)?.get(playerId);
+        if (!value || value.count === 0) {
+          return null;
+        }
+        return value.sumDamage / value.count;
+      });
+
+      const presenceCount = avgDamageByDay.filter(
+        (value) => value !== null,
+      ).length;
+
+      return {
+        playerId,
+        name: sample?.name ?? playerId,
+        presenceCount,
+        avgDamageByDay,
+      };
+    })
+    .sort((a, b) => b.presenceCount - a.presenceCount)
+    .map(({ playerId, name, avgDamageByDay }) => ({
+      playerId,
+      name,
+      avgDamageByDay,
+    }));
+
+  return {
+    days,
+    teamAvgDamage,
+    matches: matchesByDay,
+    players,
+  };
 };
 
 export const modeComparison = (rows: MatchRow[]) =>

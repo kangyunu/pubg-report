@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import {
+  buildDailyDamageTrend,
   computeFocusPlayerId,
-  dailySeries,
   playerContributionRows,
   toTeamRows,
 } from "../lib/metrics";
@@ -15,7 +15,7 @@ const useDashboardMetrics = ({ matches }: Params) => {
     const focusPlayerId = computeFocusPlayerId(matches);
     const teamRows = toTeamRows(matches, focusPlayerId);
 
-    const teamTrend = dailySeries(teamRows);
+    const teamTrend = buildDailyDamageTrend(matches, focusPlayerId);
     const contributionRows = playerContributionRows(
       matches,
       focusPlayerId,

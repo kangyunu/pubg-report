@@ -152,7 +152,10 @@ const DashboardPage = () => {
     <main className="dashboard-page">
       <DashboardHeader />
       <div className="dashboard-grid">
-        <DailyTrendLineChart points={teamTrend} title="Team Daily Trend" />
+        <DailyTrendLineChart
+          points={teamTrend}
+          title="Avg Damage Daily Trend"
+        />
 
         <section className="panel panel-filter chart-span-12">
           <div className="section-filter-row">
