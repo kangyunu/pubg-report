@@ -1,5 +1,5 @@
 import { parseArgs } from "util";
-import { crawling } from "./functions";
+import { crawling, renewBeforeCrawling as renew } from "./functions";
 
 const { values } = parseArgs({
   args: Bun.argv,
@@ -12,8 +12,11 @@ const { values } = parseArgs({
   allowPositionals: true,
 });
 
-await crawling({
+const input = {
   season: values.season || "pc-2018-40",
-  platform: "kakao",
+  platform: "kakao" as const,
   players: ["rkdqudtjs", "JJuliring", "chuchui12_"],
-});
+};
+
+await renew(input);
+await crawling(input);

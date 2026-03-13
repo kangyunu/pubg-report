@@ -15,6 +15,49 @@ type CrawlingInput = {
   platform: "kakao" | "steam";
   players: string[];
 };
+
+export const renewBeforeCrawling = async ({
+  season,
+  platform,
+  players,
+}: CrawlingInput) => {
+  const url = `https://dak.gg/pubg/profile/${platform}/${players[0]}/${season}/matches/1`;
+
+  const browser = await chromium.launch({ headless: false });
+  const page = await browser.newPage();
+
+  try {
+    await page.goto(url, {
+      waitUntil: "domcontentloaded",
+      timeout: 60000,
+    });
+
+    const renewButton = page.getByRole("button", {
+      name: /renew|전적\s*갱신/i,
+    });
+    if ((await renewButton.count()) === 0) {
+      console.log("ℹ️ Renew 버튼을 찾지 못해 renew 단계를 건너뜁니다.");
+      return;
+    }
+
+    const responsePromise = page.waitForResponse(
+      (response: Response) =>
+        response.url().includes("pubg0.dakgg.io/api/v1/players") &&
+        response.url().includes("matches"),
+      { timeout: 60000 },
+    );
+
+    await renewButton.first().click();
+    await responsePromise;
+    console.log("✔ Renew 완료");
+  } catch {
+    console.log("ℹ️ Renew 단계 실패. 크롤링은 계속 진행합니다.");
+  } finally {
+    await page.close();
+    await browser.close();
+  }
+};
+
 export const crawling = async ({
   season,
   platform,
@@ -27,9 +70,7 @@ export const crawling = async ({
   const accmulatedRawMatches: Match[] = [];
   const matchMap = new Map<string, Match[]>();
   let pageNumber = 1;
-  let keepGoing = true;
-
-  while (keepGoing) {
+  while (true) {
     console.log(`\n📄 Page ${pageNumber}`);
 
     const page = await browser.newPage();
@@ -50,7 +91,7 @@ export const crawling = async ({
 
     try {
       response = await responsePromise;
-    } catch (e) {
+    } catch {
       console.log("🚫 API 응답 못받음. 종료.");
       await page.close();
       break;
