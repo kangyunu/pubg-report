@@ -23,7 +23,7 @@ export const renewBeforeCrawling = async ({
 }: CrawlingInput) => {
   const url = `https://dak.gg/pubg/profile/${platform}/${players[0]}/${season}/matches/1`;
 
-  const browser = await chromium.launch({ headless: false });
+  const browser = await chromium.launch({ headless: true });
   const page = await browser.newPage();
 
   try {
