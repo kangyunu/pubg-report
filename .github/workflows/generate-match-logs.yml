@@ -26,7 +26,7 @@ jobs:
         run: bunx playwright install --with-deps chromium
 
       - name: Generate logs
-        run: npm run generate-match-logs
+        run: bun run generate-match-logs
 
       - name: Commit and push if changed
         env:
