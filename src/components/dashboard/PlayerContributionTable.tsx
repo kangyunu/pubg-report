@@ -4,6 +4,7 @@ type Row = {
   playerId: string;
   name: string;
   matches: number;
+  totalDamage: number;
   avgKills: number;
   avgDamage: number;
   damageShare: number;
@@ -17,6 +18,11 @@ const PlayerContributionTable = ({ rows }: { rows: Row[] }) => {
       minimumFractionDigits: digits,
       maximumFractionDigits: digits,
     });
+  const formatK = (value: number) => {
+    const scaled = value / 1000;
+    const text = scaled.toFixed(1).replace(/\.0$/, "");
+    return `${text}k`;
+  };
 
   return (
     <section className="panel chart-span-6">
@@ -62,6 +68,7 @@ const PlayerContributionTable = ({ rows }: { rows: Row[] }) => {
           <thead>
             <tr>
               <th>Player</th>
+              <th className="cell-right">TOTAL DMG</th>
               <th className="cell-right">DMG%</th>
               <th className="cell-right">KILL%</th>
             </tr>
@@ -70,6 +77,7 @@ const PlayerContributionTable = ({ rows }: { rows: Row[] }) => {
             {rows.map((row) => (
               <tr key={row.playerId}>
                 <td>{row.name}</td>
+                <td className="cell-right">{formatK(row.totalDamage)}</td>
                 <td className="cell-right">
                   {formatFixed(row.damageShare, 1)}
                 </td>

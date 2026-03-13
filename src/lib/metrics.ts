@@ -17,6 +17,7 @@ export type PlayerContributionRow = {
   playerId: string;
   name: string;
   matches: number;
+  totalDamage: number;
   avgKills: number;
   avgDamage: number;
   damageShare: number;
@@ -524,6 +525,7 @@ export const playerContributionRows = (
       playerId,
       name: value.name,
       matches: value.matches,
+      totalDamage: value.damage,
       avgKills: value.matches === 0 ? 0 : value.kills / value.matches,
       avgDamage: value.matches === 0 ? 0 : value.damage / value.matches,
       damageShare:
