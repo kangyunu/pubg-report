@@ -1,7 +1,7 @@
 const PLAYER_COLOR_MAP: Record<string, string> = {
-  rkdqudtjs: "#b3472f",
-  chuchui12_: "#2f5b4b",
-  JJuliring: "#515882",
+  rkdqudtjs: "#f2c230",
+  chuchui12_: "#f08a24",
+  JJuliring: "#3b82f6",
 };
 
 const FALLBACK_COLORS = ["#b78b44", "#4f7c8d", "#7d5a99", "#8b5a3c"];
