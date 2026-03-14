@@ -11,6 +11,15 @@ export type MatchRow = {
   kills: number;
   damage: number;
   surviveSeconds: number;
+  players?: Array<{
+    playerId: string;
+    name: string;
+    kills: number;
+    assists: number;
+    dbnos: number;
+    damage: number;
+    surviveSeconds: number;
+  }>;
 };
 
 export type PlayerContributionRow = {
@@ -41,6 +50,21 @@ const SUPPORTED_MODES: Array<"solo" | "duo" | "squad"> = [
   "duo",
   "squad",
 ];
+
+const FIXED_PLAYER_ORDER = ["rkdqudtjs", "chuchui12_", "JJuliring"];
+
+const getPlayerOrderIndex = (name: string) => {
+  const index = FIXED_PLAYER_ORDER.indexOf(name);
+  return index === -1 ? Number.MAX_SAFE_INTEGER : index;
+};
+
+const sortByFixedPlayerOrder = <T extends { name: string }>(a: T, b: T) => {
+  const orderDiff = getPlayerOrderIndex(a.name) - getPlayerOrderIndex(b.name);
+  if (orderDiff !== 0) {
+    return orderDiff;
+  }
+  return a.name.localeCompare(b.name, "ko");
+};
 
 const asPercent = (value: number) => value * 100;
 
@@ -238,6 +262,17 @@ export const toTeamRows = (
       kills: teamParticipants.reduce((sum, item) => sum + item.kills, 0),
       damage: teamParticipants.reduce((sum, item) => sum + item.damageDealt, 0),
       surviveSeconds: avg(teamParticipants.map((item) => item.timeSurvived)),
+      players: teamParticipants
+        .map((item) => ({
+          playerId: item.playerId,
+          name: item.name,
+          kills: item.kills,
+          assists: item.assists,
+          dbnos: item.dbnos,
+          damage: item.damageDealt,
+          surviveSeconds: item.timeSurvived,
+        }))
+        .sort(sortByFixedPlayerOrder),
     });
   });
 
@@ -410,7 +445,13 @@ export const buildDailyDamageTrend = (
         avgDamageByDay,
       };
     })
-    .sort((a, b) => b.presenceCount - a.presenceCount)
+    .sort((a, b) => {
+      const orderDiff = sortByFixedPlayerOrder(a, b);
+      if (orderDiff !== 0) {
+        return orderDiff;
+      }
+      return b.presenceCount - a.presenceCount;
+    })
     .map(({ playerId, name, avgDamageByDay }) => ({
       playerId,
       name,
@@ -538,5 +579,11 @@ export const playerContributionRows = (
       ...row,
       score: getPlayerScore(row),
     }))
-    .sort((a, b) => b.score - a.score);
+    .sort((a, b) => {
+      const orderDiff = sortByFixedPlayerOrder(a, b);
+      if (orderDiff !== 0) {
+        return orderDiff;
+      }
+      return b.score - a.score;
+    });
 };

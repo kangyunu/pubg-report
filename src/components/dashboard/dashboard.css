@@ -196,6 +196,35 @@ body {
   background: #f7f2ea;
 }
 
+.matches-table tbody tr[role="button"] {
+  cursor: pointer;
+}
+
+.matches-table tbody tr[role="button"]:hover {
+  background: #f8f8f3;
+}
+
+.matches-table tbody tr.row-expanded {
+  background: #f3f6ee;
+}
+
+.match-detail-row td {
+  background: #f7f9f3;
+  padding: 8px;
+}
+
+.match-detail-wrap {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.detail-table th,
+.detail-table td {
+  border-top: 1px solid #e7eadf;
+}
+
 .score-mark.score-s {
   color: #0f4f3b;
   font-weight: 900;

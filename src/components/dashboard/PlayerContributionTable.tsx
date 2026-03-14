@@ -18,11 +18,8 @@ const PlayerContributionTable = ({ rows }: { rows: Row[] }) => {
       minimumFractionDigits: digits,
       maximumFractionDigits: digits,
     });
-  const formatK = (value: number) => {
-    const scaled = value / 1000;
-    const text = scaled.toFixed(1).replace(/\.0$/, "");
-    return `${text}k`;
-  };
+  const formatInt = (value: number) =>
+    Math.round(value).toLocaleString("en-US");
 
   return (
     <section className="panel chart-span-6">
@@ -68,20 +65,20 @@ const PlayerContributionTable = ({ rows }: { rows: Row[] }) => {
           <thead>
             <tr>
               <th>Player</th>
+              <th className="cell-right">AVG DMG</th>
               <th className="cell-right">TOTAL DMG</th>
               <th className="cell-right">DMG%</th>
-              <th className="cell-right">KILL%</th>
             </tr>
           </thead>
           <tbody>
             {rows.map((row) => (
               <tr key={row.playerId}>
                 <td>{row.name}</td>
-                <td className="cell-right">{formatK(row.totalDamage)}</td>
+                <td className="cell-right">{formatInt(row.avgDamage)}</td>
+                <td className="cell-right">{formatInt(row.totalDamage)}</td>
                 <td className="cell-right">
                   {formatFixed(row.damageShare, 1)}
                 </td>
-                <td className="cell-right">{formatFixed(row.killsShare, 1)}</td>
               </tr>
             ))}
           </tbody>
