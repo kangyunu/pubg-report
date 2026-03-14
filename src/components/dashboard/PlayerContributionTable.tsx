@@ -1,4 +1,5 @@
 import { Pie } from "react-chartjs-2";
+import { getPlayerColor } from "../../lib/playerStyle";
 
 type Row = {
   playerId: string;
@@ -32,14 +33,7 @@ const PlayerContributionTable = ({ rows }: { rows: Row[] }) => {
               {
                 label: "Damage Share %",
                 data: pieRows.map((row) => Number(row.damageShare.toFixed(1))),
-                backgroundColor: [
-                  "#b3472f",
-                  "#2f5b4b",
-                  "#515882",
-                  "#b78b44",
-                  "#4f7c8d",
-                  "#7d5a99",
-                ],
+                backgroundColor: pieRows.map((row) => getPlayerColor(row.name)),
                 borderColor: "#ffffff",
                 borderWidth: 2,
               },
@@ -73,7 +67,11 @@ const PlayerContributionTable = ({ rows }: { rows: Row[] }) => {
           <tbody>
             {rows.map((row) => (
               <tr key={row.playerId}>
-                <td>{row.name}</td>
+                <td
+                  style={{ color: getPlayerColor(row.name), fontWeight: 700 }}
+                >
+                  {row.name}
+                </td>
                 <td className="cell-right">{formatInt(row.avgDamage)}</td>
                 <td className="cell-right">{formatInt(row.totalDamage)}</td>
                 <td className="cell-right">

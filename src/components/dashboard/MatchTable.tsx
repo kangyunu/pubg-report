@@ -2,6 +2,7 @@ import dayjs from "dayjs";
 import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { formatMapNameKo } from "../../lib/mapName";
 import { getMatchScore, getScoreGrade } from "../../lib/metrics";
+import { getPlayerColor } from "../../lib/playerStyle";
 
 type Row = {
   id: string;
@@ -181,7 +182,14 @@ const MatchTable = ({ rows, title = "Latest Matches" }: Props) => {
                               <tbody>
                                 {row.players.map((player) => (
                                   <tr key={`${row.id}-${player.playerId}`}>
-                                    <td>{player.name}</td>
+                                    <td
+                                      style={{
+                                        color: getPlayerColor(player.name),
+                                        fontWeight: 700,
+                                      }}
+                                    >
+                                      {player.name}
+                                    </td>
                                     <td className="cell-right">
                                       {formatInt(player.kills)}
                                     </td>
