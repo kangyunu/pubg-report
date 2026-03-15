@@ -5,7 +5,7 @@ const MAP_NAME_KO: Record<string, string> = {
   Erangel: "에란겔",
   Desert: "미라마",
   DihorOtok: "비켄디",
-  Baltic: "비켄디",
+  Baltic: "에란겔",
   Summerland: "카라킨",
   Heaven: "헤이븐",
   Kiki: "데스턴",
