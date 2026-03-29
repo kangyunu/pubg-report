@@ -51,6 +51,13 @@ const SUPPORTED_MODES: Array<"solo" | "duo" | "squad"> = [
   "squad",
 ];
 
+const toSupportedMode = (gameMode: string): "solo" | "duo" | "squad" | null => {
+  if (gameMode.startsWith("solo")) return "solo";
+  if (gameMode.startsWith("duo")) return "duo";
+  if (gameMode.startsWith("squad")) return "squad";
+  return null;
+};
+
 const FIXED_PLAYER_ORDER = ["rkdqudtjs", "chuchui12_", "JJuliring"];
 
 const getPlayerOrderIndex = (name: string) => {
@@ -155,13 +162,13 @@ export const computeFocusPlayerId = (matches: Match[]) => {
     if (match.matchType !== "official") {
       return;
     }
-    if (!SUPPORTED_MODES.includes(match.gameMode as "solo" | "duo" | "squad")) {
+    if (!toSupportedMode(match.gameMode)) {
       return;
     }
 
     match.participants.forEach((participant) => {
-      const count = score.get(participant.playerId) ?? 0;
-      score.set(participant.playerId, count + 1);
+      const count = score.get(participant.stats.playerId) ?? 0;
+      score.set(participant.stats.playerId, count + 1);
     });
   });
 
@@ -183,7 +190,7 @@ const isSupportedOfficialMatch = (match: Match) => {
     return false;
   }
 
-  return SUPPORTED_MODES.includes(match.gameMode as "solo" | "duo" | "squad");
+  return !!toSupportedMode(match.gameMode);
 };
 
 export const toPlayerRows = (
@@ -197,9 +204,12 @@ export const toPlayerRows = (
       return;
     }
 
-    const mode = match.gameMode as "solo" | "duo" | "squad";
+    const mode = toSupportedMode(match.gameMode);
+    if (!mode) {
+      return;
+    }
     const participant =
-      match.participants.find((item) => item.playerId === focusPlayerId) ??
+      match.participants.find((item) => item.stats.playerId === focusPlayerId) ??
       match.participants[0];
 
     if (!participant) {
@@ -212,11 +222,11 @@ export const toPlayerRows = (
       day: dayjs(match.createdAt).format("YYYY-MM-DD"),
       mode,
       mapName: match.mapName,
-      teamRank: participant.teamRank,
+      teamRank: participant.rank,
       teamTotal: participant.teamTotal,
-      kills: participant.kills,
-      damage: participant.damageDealt,
-      surviveSeconds: participant.timeSurvived,
+      kills: participant.stats.kills,
+      damage: participant.stats.damageDealt,
+      surviveSeconds: participant.stats.timeSurvived,
     });
   });
 
@@ -234,9 +244,12 @@ export const toTeamRows = (
       return;
     }
 
-    const mode = match.gameMode as "solo" | "duo" | "squad";
+    const mode = toSupportedMode(match.gameMode);
+    if (!mode) {
+      return;
+    }
     const focusParticipant =
-      match.participants.find((item) => item.playerId === focusPlayerId) ??
+      match.participants.find((item) => item.stats.playerId === focusPlayerId) ??
       match.participants[0];
 
     if (!focusParticipant) {
@@ -257,20 +270,25 @@ export const toTeamRows = (
       day: dayjs(match.createdAt).format("YYYY-MM-DD"),
       mode,
       mapName: match.mapName,
-      teamRank: focusParticipant.teamRank,
+      teamRank: focusParticipant.rank,
       teamTotal: focusParticipant.teamTotal,
-      kills: teamParticipants.reduce((sum, item) => sum + item.kills, 0),
-      damage: teamParticipants.reduce((sum, item) => sum + item.damageDealt, 0),
-      surviveSeconds: avg(teamParticipants.map((item) => item.timeSurvived)),
+      kills: teamParticipants.reduce((sum, item) => sum + item.stats.kills, 0),
+      damage: teamParticipants.reduce(
+        (sum, item) => sum + item.stats.damageDealt,
+        0,
+      ),
+      surviveSeconds: avg(
+        teamParticipants.map((item) => item.stats.timeSurvived),
+      ),
       players: teamParticipants
         .map((item) => ({
-          playerId: item.playerId,
-          name: item.name,
-          kills: item.kills,
-          assists: item.assists,
-          dbnos: item.dbnos,
-          damage: item.damageDealt,
-          surviveSeconds: item.timeSurvived,
+          playerId: item.stats.playerId,
+          name: item.stats.name,
+          kills: item.stats.kills,
+          assists: item.stats.assists,
+          dbnos: item.stats.DBNOs,
+          damage: item.stats.damageDealt,
+          surviveSeconds: item.stats.timeSurvived,
         }))
         .sort(sortByFixedPlayerOrder),
     });
@@ -369,7 +387,7 @@ export const buildDailyDamageTrend = (
     }
 
     const focusParticipant =
-      match.participants.find((item) => item.playerId === focusPlayerId) ??
+      match.participants.find((item) => item.stats.playerId === focusPlayerId) ??
       match.participants[0];
 
     if (!focusParticipant) {
@@ -384,7 +402,7 @@ export const buildDailyDamageTrend = (
     );
 
     const teamDamage = teamParticipants.reduce(
-      (sum, participant) => sum + participant.damageDealt,
+      (sum, participant) => sum + participant.stats.damageDealt,
       0,
     );
     const teamPerMatchAvgDamage =
@@ -395,15 +413,15 @@ export const buildDailyDamageTrend = (
     teamPerMatchAvgDamageByDay.set(day, dayDamages);
 
     teamParticipants.forEach((participant) => {
-      const prev = dayMap.get(participant.playerId) ?? {
-        name: participant.name,
+      const prev = dayMap.get(participant.stats.playerId) ?? {
+        name: participant.stats.name,
         sumDamage: 0,
         count: 0,
       };
 
-      dayMap.set(participant.playerId, {
-        name: participant.name,
-        sumDamage: prev.sumDamage + participant.damageDealt,
+      dayMap.set(participant.stats.playerId, {
+        name: participant.stats.name,
+        sumDamage: prev.sumDamage + participant.stats.damageDealt,
         count: prev.count + 1,
       });
     });
@@ -516,7 +534,7 @@ export const playerContributionRows = (
     }
 
     const focusParticipant =
-      match.participants.find((item) => item.playerId === focusPlayerId) ??
+      match.participants.find((item) => item.stats.playerId === focusPlayerId) ??
       match.participants[0];
 
     if (!focusParticipant) {
@@ -532,17 +550,17 @@ export const playerContributionRows = (
     }
 
     const teamKills = teamParticipants.reduce(
-      (sum, item) => sum + item.kills,
+      (sum, item) => sum + item.stats.kills,
       0,
     );
     const teamDamage = teamParticipants.reduce(
-      (sum, item) => sum + item.damageDealt,
+      (sum, item) => sum + item.stats.damageDealt,
       0,
     );
 
     teamParticipants.forEach((participant) => {
-      const prev = aggregate.get(participant.playerId) ?? {
-        name: participant.name,
+      const prev = aggregate.get(participant.stats.playerId) ?? {
+        name: participant.stats.name,
         matches: 0,
         kills: 0,
         damage: 0,
@@ -550,11 +568,11 @@ export const playerContributionRows = (
         teamDamage: 0,
       };
 
-      aggregate.set(participant.playerId, {
-        name: participant.name,
+      aggregate.set(participant.stats.playerId, {
+        name: participant.stats.name,
         matches: prev.matches + 1,
-        kills: prev.kills + participant.kills,
-        damage: prev.damage + participant.damageDealt,
+        kills: prev.kills + participant.stats.kills,
+        damage: prev.damage + participant.stats.damageDealt,
         teamKills: prev.teamKills + teamKills,
         teamDamage: prev.teamDamage + teamDamage,
       });

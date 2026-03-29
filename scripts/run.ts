@@ -1,24 +1,10 @@
-import { parseArgs } from "util";
 import {
   crawling,
   getLatestLogIdFromFilesIndex,
   getLatestStoredLogId,
-  renewBeforeCrawling as renew,
 } from "./functions";
 
-const { values } = parseArgs({
-  args: Bun.argv,
-  options: {
-    season: {
-      type: "string",
-    },
-  },
-  strict: true,
-  allowPositionals: true,
-});
-
 const input = {
-  season: values.season || "pc-2018-40",
   platform: "kakao" as const,
   players: ["rkdqudtjs", "JJuliring", "chuchui12_"],
 };
@@ -46,5 +32,4 @@ if (!latestLogId) {
   console.log(`ℹ️ 이번 실행 stop ID: ${latestLogId}`);
 }
 
-await renew(input);
 await crawling(input, latestLogId);

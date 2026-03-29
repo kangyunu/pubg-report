@@ -9,6 +9,8 @@
   "private": true,
   "scripts": {
     "generate-match-logs": "bun scripts/run.ts",
+    "migrate-match-schema": "bun scripts/migrate-match-schema.ts",
+    "test-api-migration": "bun scripts/test-api-migration.ts",
     "dev": "vite",
     "prebuild": "bun scripts/preserve-matches.ts backup",
     "build": "vite build",
@@ -25,7 +27,6 @@
     "react-dom": "^19.2.0"
   },
   "devDependencies": {
-    "@playwright/test": "^1.58.2",
     "@types/bun": "latest",
     "@eslint/js": "^9.39.1",
     "@types/node": "^24.10.1",

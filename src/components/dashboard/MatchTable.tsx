@@ -7,6 +7,7 @@ import { getPlayerColor } from "../../lib/playerStyle";
 type Row = {
   id: string;
   createdAt: string;
+  day: string;
   mode: "solo" | "duo" | "squad";
   mapName: string;
   teamRank: number;

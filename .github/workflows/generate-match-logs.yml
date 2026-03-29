@@ -22,10 +22,9 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
-      - name: Install Playwright Chromium
-        run: bunx playwright install --with-deps chromium
-
       - name: Generate logs
+        env:
+          PUBG_API_KEY: ${{ secrets.PUBG_API_KEY }}
         run: bun run generate-match-logs
 
       - name: Commit and push if changed

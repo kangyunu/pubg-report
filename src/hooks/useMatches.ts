@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { normalizeMatch } from "../lib/normalizeMatch";
 
 const useMatches = () => {
   const { data: matches = [] } = useQuery({
@@ -18,7 +19,8 @@ const useMatches = () => {
             console.warn(`Failed to fetch ${fileName}, skipping.`);
             return [] as Match[];
           }
-          return (await res.json()) as Match[];
+          const data = (await res.json()) as Array<Match | LegacyMatch>;
+          return data.map(normalizeMatch);
         }),
       );
 
