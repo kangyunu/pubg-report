@@ -1,0 +1,178 @@
+[
+  {
+    "id": "d89ab78c-61e6-41d6-9497-2709da703f53",
+    "createdAt": "2026-08-08T09:19:55Z",
+    "duration": 1119,
+    "matchType": "official",
+    "gameMode": "duo",
+    "mapName": "Summerland_Main",
+    "isCustomMatch": false,
+    "shard": "kakao",
+    "participants": [
+      {
+        "id": "798eb81f-702c-4bdf-ab35-575849805923",
+        "teamId": 11,
+        "rank": 8,
+        "teamTotal": 34,
+        "shardId": "kakao",
+        "stats": {
+          "DBNOs": 2,
+          "assists": 0,
+          "boosts": 3,
+          "damageDealt": 855.2704,
+          "deathType": "byplayer",
+          "headshotKills": 1,
+          "heals": 2,
+          "killPlace": 2,
+          "killStreaks": 1,
+          "kills": 6,
+          "longestKill": 134.78046,
+          "name": "rkdqudtjs",
+          "playerId": "account.41cc7b4709bd49349e837f85a4a0ca27",
+          "revives": 0,
+          "rideDistance": 0,
+          "roadKills": 0,
+          "swimDistance": 0,
+          "teamKills": 0,
+          "timeSurvived": 707,
+          "vehicleDestroys": 0,
+          "walkDistance": 2205.3289,
+          "weaponsAcquired": 9,
+          "winPlace": 8
+        }
+      }
+    ]
+  },
+  {
+    "id": "c48a914a-3fcf-40c9-a719-ca345d136b14",
+    "createdAt": "2026-08-08T09:03:10Z",
+    "duration": 1702,
+    "matchType": "official",
+    "gameMode": "duo",
+    "mapName": "Tiger_Main",
+    "isCustomMatch": false,
+    "shard": "kakao",
+    "participants": [
+      {
+        "id": "f6665ce8-fa73-4111-9ba2-af043ef222a1",
+        "teamId": 17,
+        "rank": 21,
+        "teamTotal": 51,
+        "shardId": "kakao",
+        "stats": {
+          "DBNOs": 3,
+          "assists": 1,
+          "boosts": 6,
+          "damageDealt": 445.38968,
+          "deathType": "byplayer",
+          "headshotKills": 0,
+          "heals": 3,
+          "killPlace": 31,
+          "killStreaks": 1,
+          "kills": 1,
+          "longestKill": 32.170353,
+          "name": "rkdqudtjs",
+          "playerId": "account.41cc7b4709bd49349e837f85a4a0ca27",
+          "revives": 0,
+          "rideDistance": 5463.6064,
+          "roadKills": 0,
+          "swimDistance": 0,
+          "teamKills": 0,
+          "timeSurvived": 904,
+          "vehicleDestroys": 0,
+          "walkDistance": 1506.1997,
+          "weaponsAcquired": 10,
+          "winPlace": 21
+        }
+      }
+    ]
+  },
+  {
+    "id": "73f33e09-9f67-423a-9c4b-7a319786d373",
+    "createdAt": "2026-08-08T08:55:57Z",
+    "duration": 1707,
+    "matchType": "official",
+    "gameMode": "duo",
+    "mapName": "Tiger_Main",
+    "isCustomMatch": false,
+    "shard": "kakao",
+    "participants": [
+      {
+        "id": "64e699db-064e-4181-81b4-b4ed2ade7221",
+        "teamId": 16,
+        "rank": 42,
+        "teamTotal": 51,
+        "shardId": "kakao",
+        "stats": {
+          "DBNOs": 1,
+          "assists": 0,
+          "boosts": 1,
+          "damageDealt": 185.2,
+          "deathType": "byplayer",
+          "headshotKills": 1,
+          "heals": 0,
+          "killPlace": 38,
+          "killStreaks": 1,
+          "kills": 1,
+          "longestKill": 71.27484,
+          "name": "rkdqudtjs",
+          "playerId": "account.41cc7b4709bd49349e837f85a4a0ca27",
+          "revives": 0,
+          "rideDistance": 827.2303,
+          "roadKills": 0,
+          "swimDistance": 0,
+          "teamKills": 0,
+          "timeSurvived": 309,
+          "vehicleDestroys": 0,
+          "walkDistance": 567.3692,
+          "weaponsAcquired": 14,
+          "winPlace": 42
+        }
+      }
+    ]
+  },
+  {
+    "id": "2105db0d-954e-4b2e-8f70-548cdffc34d7",
+    "createdAt": "2026-08-08T08:49:29Z",
+    "duration": 1373,
+    "matchType": "official",
+    "gameMode": "duo",
+    "mapName": "Savage_Main",
+    "isCustomMatch": false,
+    "shard": "kakao",
+    "participants": [
+      {
+        "id": "cc8621ef-f4c7-492d-8319-deb0a968e18a",
+        "teamId": 25,
+        "rank": 38,
+        "teamTotal": 50,
+        "shardId": "kakao",
+        "stats": {
+          "DBNOs": 0,
+          "assists": 0,
+          "boosts": 0,
+          "damageDealt": 17.90494,
+          "deathType": "byplayer",
+          "headshotKills": 0,
+          "heals": 0,
+          "killPlace": 80,
+          "killStreaks": 0,
+          "kills": 0,
+          "longestKill": 0,
+          "name": "rkdqudtjs",
+          "playerId": "account.41cc7b4709bd49349e837f85a4a0ca27",
+          "revives": 0,
+          "rideDistance": 0,
+          "roadKills": 0,
+          "swimDistance": 0,
+          "teamKills": 0,
+          "timeSurvived": 221,
+          "vehicleDestroys": 0,
+          "walkDistance": 550.0531,
+          "weaponsAcquired": 5,
+          "winPlace": 38
+        }
+      }
+    ]
+  }
+]
